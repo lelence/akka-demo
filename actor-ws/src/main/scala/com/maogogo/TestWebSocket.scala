@@ -16,6 +16,7 @@ import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.ws.UpgradeToWebSocket
 import akka.http.scaladsl.model.HttpMethods
+import scala.concurrent.Future
 
 object TestWebSocket extends App {
 
@@ -32,6 +33,7 @@ object TestWebSocket extends App {
         case tm: TextMessage ⇒
           println("11111===>>" + tm)
           TextMessage(Source.single("Hello ") ++ tm.textStream) :: Nil
+          // Future.successful(tm.textStream)
         case bm: BinaryMessage ⇒
           // ignore binary messages but drain content to avoid the stream being clogged
           bm.dataStream.runWith(Sink.ignore)
@@ -43,6 +45,7 @@ object TestWebSocket extends App {
       req.header[UpgradeToWebSocket] match {
         case Some(upgrade) ⇒
           println("hello ===>> message ==>>" + upgrade)
+          // handleWebSocketMessages(greeterWebSocketService)
           upgrade.handleMessages(greeterWebSocketService)
         case None ⇒
           println("ddddddd")
@@ -55,7 +58,7 @@ object TestWebSocket extends App {
   }
 
   val bindingFuture =
-    Http().bindAndHandleSync(requestHandler, interface = "localhost", port = 9000)
+    Http().bindAndHandleSync(requestHandler, interface = "localhost", port = 8080)
 
   println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
   StdIn.readLine()

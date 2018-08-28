@@ -11,6 +11,8 @@ object TestHttpApp extends App {
   implicit val actorSystem = ActorSystem("akka-system")
   implicit val flowMaterializer = ActorMaterializer()
 
+  val client = new WebSocketClient()
+
   val interface = "localhost"
   val port = 8080
 
@@ -18,7 +20,14 @@ object TestHttpApp extends App {
 
   val route = get {
     pathEndOrSingleSlash {
-      complete("Welcome to websocket server")
+
+      onSuccess(client.connected) { resp ⇒
+
+        println("resp =>>" + resp)
+        complete(resp)
+      }
+
+      // complete("Welcome to websocket server")
     }
   }
   val binding = Http().bindAndHandle(route, interface, port)
