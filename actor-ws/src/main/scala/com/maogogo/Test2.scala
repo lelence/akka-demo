@@ -7,12 +7,13 @@ import akka.http.scaladsl.Http
 
 object Test2 extends App {
 
-//  import org.java_websocket.drafts.Draft
+  //  import org.java_websocket.drafts.Draft
   //  val name = scala.io.StdIn.readLine("What's your name? ")
   //  println("name => " + name)
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
+
   import system.dispatcher
 
   while (true) {
@@ -28,7 +29,10 @@ object Test2 extends App {
 
   def aa() {
     val (upgradeResponse, closed) =
-      Http().singleWebSocketRequest(WebSocketRequest("ws://192.168.0.200:8546"), null)
+      Http().singleWebSocketRequest(
+        WebSocketRequest("ws://192.168.0.200:8546"),
+        null
+      )
 
     //    upgradeResponse.
 

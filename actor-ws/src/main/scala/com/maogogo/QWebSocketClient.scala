@@ -11,10 +11,10 @@ case object SendMessage
 class QWebSocketClient(uri: URI) extends WebSocketClient(uri) with Actor {
 
   override def preStart(): Unit = {
-//    connect()
-//    while (!getReadyState().equals(READYSTATE.OPEN)) {
-//      // System.out.println("还没有打开");
-//    }
+    //    connect()
+    //    while (!getReadyState().equals(READYSTATE.OPEN)) {
+    //      // System.out.println("还没有打开");
+    //    }
   }
 
   override def onClose(x$1: Int, x$2: String, x$3: Boolean): Unit = {
@@ -37,10 +37,10 @@ class QWebSocketClient(uri: URI) extends WebSocketClient(uri) with Actor {
   }
 
   def receive: Actor.Receive = {
-    case s: String ⇒ 
+    case s: String ⇒
       // send(s)
-      
-//      this.
+
+      //      this.
       println("aaa ==>>>" + s)
       sender ! "ssssss"
   }

@@ -41,7 +41,7 @@ object TestWebSocket extends App {
       }
 
   val requestHandler: HttpRequest ⇒ HttpResponse = {
-    case req @ HttpRequest(HttpMethods.GET, Uri.Path("/greeter"), _, _, _) ⇒
+    case req@HttpRequest(HttpMethods.GET, Uri.Path("/greeter"), _, _, _) ⇒
       req.header[UpgradeToWebSocket] match {
         case Some(upgrade) ⇒
           println("hello ===>> message ==>>" + upgrade)
@@ -58,7 +58,11 @@ object TestWebSocket extends App {
   }
 
   val bindingFuture =
-    Http().bindAndHandleSync(requestHandler, interface = "localhost", port = 8080)
+    Http().bindAndHandleSync(
+      requestHandler,
+      interface = "localhost",
+      port = 8080
+    )
 
   println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
   StdIn.readLine()

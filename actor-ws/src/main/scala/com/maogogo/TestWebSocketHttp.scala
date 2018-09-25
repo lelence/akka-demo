@@ -38,4 +38,3 @@ class EchoService {
     case BinaryMessage.Strict(txt) ⇒ BinaryMessage(ByteString("hello"))
   }
 }
-

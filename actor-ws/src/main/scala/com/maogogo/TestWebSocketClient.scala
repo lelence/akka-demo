@@ -21,6 +21,7 @@ object TestWebSocketClient extends App {
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
+
   import system.dispatcher
 
   //  val printSink: Sink[Message, Future[Done]] = {
@@ -31,16 +32,32 @@ object TestWebSocketClient extends App {
   //  }
 
   val helloSource: Source[Message, NotUsed] =
-    Source.single(TextMessage("""{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}"""))
+    Source.single(
+      TextMessage(
+        """{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}"""
+      )
+    )
 
   val s: Sink[Message, Future[Done]] = Sink.foreach[Message](println)
-  val d: Source[TextMessage, NotUsed] = Source(TextMessage("""{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}""") :: TextMessage("""{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}""") :: Nil)
+  val d: Source[TextMessage, NotUsed] = Source(
+    TextMessage(
+      """{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}"""
+    ) :: TextMessage(
+      """{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}"""
+    ) :: Nil
+  )
 
   val flow: Flow[Message, Message, Promise[Option[Message]]] =
     Flow.fromSinkAndSourceMat(
       Sink.foreach[Message](println),
-      Source(TextMessage("""{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}""") :: TextMessage("""{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}""") :: Nil)
-        .concatMat(Source.maybe[Message])(Keep.right))(Keep.right)
+      Source(
+        TextMessage(
+          """{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}"""
+        ) :: TextMessage(
+          """{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}"""
+        ) :: Nil
+      ).concatMat(Source.maybe[Message])(Keep.right)
+    )(Keep.right)
 
   // Flow.fromSinkAndSourceMat(printSink, helloSource)(Keep.left)
 
@@ -52,7 +69,8 @@ object TestWebSocketClient extends App {
   // val (u, d) = Http().singleWebSocketRequest(WebSocketRequest("ws://192.168.0.200:8546"), flow)
 
   val (upgradeResponse, closed) =
-    Http().singleWebSocketRequest(WebSocketRequest("ws://192.168.0.200:8546"), flow)
+    Http()
+      .singleWebSocketRequest(WebSocketRequest("ws://192.168.0.200:8546"), flow)
 
   import scala.concurrent.duration._
 
@@ -67,7 +85,9 @@ object TestWebSocketClient extends App {
 
       upgrade.response.entity.dataBytes.map(_.utf8String).runReduce(_ + _)
     } else {
-      throw new RuntimeException(s"Connection failed: ${upgrade.response.status}")
+      throw new RuntimeException(
+        s"Connection failed: ${upgrade.response.status}"
+      )
     }
   }
 

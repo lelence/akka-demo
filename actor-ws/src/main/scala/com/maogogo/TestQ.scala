@@ -13,6 +13,7 @@ object TestQ extends App {
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
+
   import system.dispatcher
 
   implicit val timeout = Timeout(3.seconds)
@@ -20,7 +21,6 @@ object TestQ extends App {
   val uri = new URI("ws://localhost:9000")
   val a = system.actorOf(Props(classOf[QWebSocketClient], uri), "Test")
 
-  
   val d = Await.result((a ? "haha").mapTo[String], 5 seconds)
 
   println("d  ==.>>>" + d)
